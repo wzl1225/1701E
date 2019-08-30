@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ES6复习</title>
+</head>
+<body>
+    <script>
+        /** var, let, const
+        // 变量提升+作用域+this指向
+        var num = 1000;
+        function printNum(){
+            var num = 100;
+            console.log(this.num);
+        }
+        printNum();
+        */
+
+        // 属性描述符: writable, enumerable, configurable, value && set, get
+        var beijing = {
+            name: '北京',
+            loc: '华北',
+            weather: 'dry',
+            advantage: 'famous & big',
+            tel: '010',
+            area: ['东城区','西城区','海淀区','朝阳区']
+        }
+
+        // 修改writable
+        Object.defineProperty(beijing, 'tel', {
+            writable: false
+        })
+
+        // 修改enurmable
+        // Object.defineProperty(beijing, 'advantage', {
+        //     enumerable: false
+        // })
+
+
+        // 修改configurable
+        // Object.defineProperty(beijing, 'advantage', {
+        //     configurable: false
+        // })
+
+        // 修改value
+        Object.defineProperty(beijing, 'advantage', {
+            // value: ()=>{return 'famous & big'},
+            set: function(val){
+                console.log('val...', val);
+            },
+            get: (val)=>{
+                return val;
+            }
+        })
+        for (var key in beijing){console.log('key...', key, 'val...', beijing[key])}
+
+        var getName = ()=>console.log(this.name);
+        var name = '上海', loc = '华东';
+        getName();
+
+        var getLocation = function(){
+            console.log(this.loc);
+        }
+
+        // Object & Array
+        var tianjin = Object.assign({}, beijing, {name: '天津'});
+        console.log('深拷贝?...', beijing === tianjin);
+
+        // Promise, Aysnc/Await, Generator
+
+        // Promise的状态： pennding, fulfilled(resolve), rejected(reject)
+        // 生成promise的方式：new Promise(), Promise.resolve(), Promise.rejected(), Promise.all(), Promise.race()
+
+        function loadJs(src){
+            return new Promise((resolve, reject)=>{
+                var js = document.createElement('script');
+                js.src = src;
+                js.onload = ()=>{
+                    resolve(src);
+                }
+                js.onerror = ()=>{
+                    reject();
+                }
+                document.body.appendChild(js);
+            })
+        }
+
+        loadJs('https://unpkg.com/axios/dist/axios.min.js').then(res=>{
+            console.log('js加载完成')
+            return Promise.resolve('1000');
+            // return Promise.rejected(new Error('123'))
+            // throw new Error('123')
+            // return 100;
+        }, err=>{
+            console.log('js加载失败')
+        }).then(res2=>{
+            console.log('res2...', res2)
+        }, err2=>{
+            console.log('err2...', err2)
+        }).catch()
+
+        Promise.all(['https://unpkg.com/axios/dist/axios.min.js', 'https://unpkg.com/flyio/dist/fly.min.js'].map(item=>loadJs(item))).then(res=>{
+            console.log('res...', res);
+        }, err=>{
+            console.log('err...', err);
+        })
+
+        
+        Promise.race(['https://unpkg.com/axios/dist/axios.min.js', 'https://unpkg.com/flyio/dist/fly.min.js'].map(item=>loadJs(item))).then(res=>{
+            console.log('res...', res);
+        }, err=>{
+            console.log('err...', err);
+        })
+
+        // 作业：手动封装Promise，使用Promise完成图片上传进度条
+    </script>
+</body>
+</html>
