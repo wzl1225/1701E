@@ -87,34 +87,104 @@
             })
         }
 
-        loadJs('https://unpkg.com/axios/dist/axios.min.js').then(res=>{
-            console.log('js加载完成')
-            return Promise.resolve('1000');
-            // return Promise.rejected(new Error('123'))
-            // throw new Error('123')
-            // return 100;
-        }, err=>{
-            console.log('js加载失败')
-        }).then(res2=>{
-            console.log('res2...', res2)
-        }, err2=>{
-            console.log('err2...', err2)
-        }).catch()
+        // loadJs('https://unpkg.com/axios/dist/axios.min.js').then(res=>{
+        //     console.log('js加载完成')
+        //     return Promise.resolve('1000');
+        //     // return Promise.rejected(new Error('123'))
+        //     // throw new Error('123')
+        //     // return 100;
+        // }, err=>{
+        //     console.log('js加载失败')
+        // }).then(res2=>{
+        //     console.log('res2...', res2)
+        // }, err2=>{
+        //     console.log('err2...', err2)
+        // }).catch()
 
-        Promise.all(['https://unpkg.com/axios/dist/axios.min.js', 'https://unpkg.com/flyio/dist/fly.min.js'].map(item=>loadJs(item))).then(res=>{
-            console.log('res...', res);
-        }, err=>{
-            console.log('err...', err);
-        })
+        // Promise.all(['https://unpkg.com/axios/dist/axios.min.js', 'https://unpkg.com/flyio/dist/fly.min.js'].map(item=>loadJs(item))).then(res=>{
+        //     console.log('res...', res);
+        // }, err=>{
+        //     console.log('err...', err);
+        // })
 
         
-        Promise.race(['https://unpkg.com/axios/dist/axios.min.js', 'https://unpkg.com/flyio/dist/fly.min.js'].map(item=>loadJs(item))).then(res=>{
-            console.log('res...', res);
-        }, err=>{
-            console.log('err...', err);
-        })
+        // Promise.race(['https://unpkg.com/axios/dist/axios.min.js', 'https://unpkg.com/flyio/dist/fly.min.js'].map(item=>loadJs(item))).then(res=>{
+        //     console.log('res...', res);
+        // }, err=>{
+        //     console.log('err...', err);
+        // })
 
         // 作业：手动封装Promise，使用Promise完成图片上传进度条
+
+        // async/await， generator函数的语法糖
+        // 1.表示函数是异步函数，里面会有异步代码阻塞执行
+        // 2.await 表达式的返回结果是resolve传的数据
+        // 3.try...catch捕获await里面的reject，防止中断程序的执行
+        // 4.async返回的返回值也是一个promise
+
+        var imgs = ['https://unpkg.com/axios/dist/axios.min.js', 'https://unpkg.com/flyio/dist/fly.min.js'];
+        // async function loadAsyncJs(){
+        //     // var jsSrc1 = await loadJs(imgs[0]);
+        //     console.log('11111');
+        //     // var jsSrc2 = await loadJs(imgs[1]);
+        //     console.log('22222');
+        //     // var data = await (()=>100)();
+        //     try{
+        //         var data = await Promise.reject(100);
+        //     }catch(err){
+
+        //     }
+        //     console.log('data...', data);
+        // }
+
+        // console.log(loadAsyncJs());
+
+        // generator函数
+        // 1.generator函数第一次调用返回迭代器，用于控制后续语句的执行
+        // 2.迭代器调用next的时候会往下执行，直到遇到yield或return语句，同返回返回一个对象{value: 表达式的执行结果, done：generator函数的状态}
+        // 3.yield表达式的返回结果，是下一次调用next传入的数据
+        // 4.封装自动执行模块co
+        function * loadGeneJs(){
+            let res1 = yield loadJs(imgs[0]);
+            console.log('res1...', res1);
+            let res2 = yield loadJs(imgs[1]);
+            console.log('res2...', res2);
+            let res3 = yield 3;
+            console.log('res3...', res3);
+            return 4;
+        }
+
+        // var g = loadGeneJs();
+        // console.log(g.next(100));
+        // console.log(g.next(1000));
+        // console.log(g.next(10000));
+        // console.log(g.next(100000));
+
+        // 自动执行器
+        function co(func){
+            // 1.生成一个迭代器
+            var g = func();
+
+            function exec(value){
+                // 2.调用g.next获取generator函数的执行状态
+                let val = g.next(value);
+                // 3.通过done判断是否执行结束
+                if (!val.done){
+                    // 4.如果没有结束，递归调用自己
+                    if (val.value.then){
+                        val.value.then(res=>{
+                            exec(res);
+                        })
+                    }else{
+                        exec(val.value);
+                    }
+                }
+            }
+
+            exec();
+        }
+
+        co(loadGeneJs);
     </script>
 </body>
 </html>
