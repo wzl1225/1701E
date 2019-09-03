@@ -16,6 +16,18 @@ npm run start
 ```js
 npm install --save-dev @babel/plugin-proposal-decorators
 ```
+
 - 引入路由
+```js
+npm install --save-dev react-router-dom @types/react-router-dom
+```
+
 - 引入mobx
+```js
+npm install --save-dev mobx mobx-react
+```
+
 - 引入antd
+```js
+npm install --save-dev antd
+```
