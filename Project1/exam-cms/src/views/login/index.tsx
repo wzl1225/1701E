@@ -13,7 +13,37 @@ interface Props {
 @inject('user')
 @observer
 class LoginPage extends React.Component<Props>{
+  constructor(props: Props){
+    super(props);
+    
+    // 1. ts中的变量，尽量少用any
+    // let a:object = {form: this.props.form};
 
+    // 2. ts中的函数，尽量少用void
+    // function add(num1: number, num2: any): object[]{
+    //   // return num1+num2;
+    //   return [{}]
+    // }
+
+    // console.log(add(1, '2', 100));
+
+    // // 3. 接口和枚举
+    // interface Props{
+
+    // }
+
+    // enum Enum{
+
+    // }
+
+    // // 4.泛型
+    // function add<T>(num1: T, num2: T): T{
+    //   return num1;
+    // }
+    // add<string>('abc', 'def');
+  }
+
+  // 登陆处理函数 
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
@@ -33,6 +63,7 @@ class LoginPage extends React.Component<Props>{
   render(){
     console.log('props...', this.props, this.props.user.login);
 
+    // 表单校验的高阶组件
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">

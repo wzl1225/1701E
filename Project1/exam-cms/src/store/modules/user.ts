@@ -6,7 +6,7 @@ import {HttpInfo, HttpType, LoginForm} from '../../types/index'
 class User{
     @observable isLogin: boolean = false;
 
-    @action async login(form: LoginForm): Promise<any>{
+    @action async login(form: any): Promise<any>{
         let result: any = await login(form);
         console.log('result...', result);
         return result.code;
