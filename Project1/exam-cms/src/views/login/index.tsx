@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import {WrappedFormUtils} from 'antd/lib/form/Form'
+import {History} from 'history/index'
 import {inject, observer} from 'mobx-react'
 import './index.css'
 
 interface Props {
   form: WrappedFormUtils,
   user: any,
+  history: History,
   abc?: string
 }
 
@@ -24,6 +26,12 @@ class LoginPage extends React.Component<Props>{
     //   // return num1+num2;
     //   return [{}]
     // }
+    
+    // let add: (num1: number, num2: any)=>object[] = (num1, num2)=>{
+    //   return [{}]
+    // }
+
+    // add(1, 1);
 
     // console.log(add(1, '2', 100));
 
@@ -53,6 +61,7 @@ class LoginPage extends React.Component<Props>{
         console.log('result...', result);
         if (result === 1){
           // 跳转路由
+          this.props.history.replace('/main');
         }else{
           // 提示错误
         }
@@ -65,12 +74,14 @@ class LoginPage extends React.Component<Props>{
 
     // 表单校验的高阶组件
     const { getFieldDecorator } = this.props.form;
+    const {user_name, user_pwd} = this.props.user.account;
+
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
-        <span>{this.props.user.isLogin?'true': 'false'}</span>
         <Form.Item>
           {getFieldDecorator('user_name', {
             validateTrigger: 'onBlur',
+            initialValue: user_name,
             rules: [
               { validator: (ruler, value, callback)=>{
                 console.log('value...', value);
@@ -91,6 +102,7 @@ class LoginPage extends React.Component<Props>{
         <Form.Item>
           {getFieldDecorator('user_pwd', {
             validateTrigger: 'onBlur',
+            initialValue: user_pwd,
             rules: [
               { validator: (ruler, value, callback)=>{
                 console.log('value...', value);
@@ -114,6 +126,12 @@ class LoginPage extends React.Component<Props>{
             valuePropName: 'checked',
             initialValue: true,
           })(<Checkbox>Remember me</Checkbox>)}
+        </Form.Item>
+        <Form.Item>
+           {getFieldDecorator('autoLogin', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(<Checkbox>Auto login in 7 days</Checkbox>)}
           <a className="login-form-forgot" href="">
             Forgot password
           </a>
