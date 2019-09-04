@@ -1,23 +1,27 @@
 import * as React from 'react';
+import {Layout} from 'antd';
+import {observer, inject} from 'mobx-react';
+const { Header, Content, Sider} = Layout;
 
+@inject('question')
+@observer
 class LoginPage extends React.Component{
     constructor(props: any){
         super(props);
-
-        // 1.类型
-        let list: number = 100;
-        let arr: Array<object> = [{}];
-        let arr2: [object] = [{}];
-
-        // 2.函数
-        function add(num1: number, num2: any){
-
-        }
+        const {getQuestion} = props.question;
+        getQuestion();
     }
 
 
+
     public render(){
-        return <p>主页面</p>
+        return <Layout>
+            <Header></Header>
+            <Layout>
+                <Sider></Sider>
+                <Content></Content>
+            </Layout>
+        </Layout>
     }
 }
 

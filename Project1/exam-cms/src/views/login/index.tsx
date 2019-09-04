@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
 import {WrappedFormUtils} from 'antd/lib/form/Form'
 import {History} from 'history/index'
 import {inject, observer} from 'mobx-react'
@@ -57,13 +57,14 @@ class LoginPage extends React.Component<Props>{
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        const result = await this.props.user.login(values);
-        console.log('result...', result);
-        if (result === 1){
+        const {code, msg} = await this.props.user.login(values);
+
+        if (code === 1){
           // 跳转路由
           this.props.history.replace('/main');
         }else{
           // 提示错误
+          message.error(msg || '用户名或密码错误');
         }
       }
     });
